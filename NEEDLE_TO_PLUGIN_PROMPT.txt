@@ -1,0 +1,15 @@
+Use Needle to find Reddit discussions from the last 24 hours with strong problem-solving or comparison intent around:
+- personal loans
+- debt consolidation
+- credit score / credit report
+- credit cards and debt payoff
+- mortgages / refinance / FHA / VA / jumbo
+- HELOC / home equity
+- student loans / refinancing / repayment
+- small-business loans / SBA / working capital
+
+Prioritize posts where a person is explicitly asking what to do, comparing offers, asking about costs/rates/eligibility, or struggling with a decision. Exclude memes, political discussions, obvious spam, and threads where promotion is clearly unwelcome.
+
+For every candidate return: thread_url, title, short body/context, subreddit, created time if available, comment count/upvotes if available, and Needle intent score if available.
+
+Then send those results into the EasyLoanWorld Reddit Growth Copilot as Needle opportunities. Show the top 10 opportunities scoring 65+ and draft no-link answers for the top 5. Do not publish anything.

@@ -1,0 +1,5 @@
+# Draft from opportunities imported by Needle every day at 08:00 local server time.
+0 8 * * * cd /opt/easyloanworld-reddit-growth && /usr/bin/python3 scripts/daily_run.py --source queue_only >> data/cron.log 2>&1
+
+# If/when Reddit grants the commercial API permissions needed for your use case,
+# you can change --source queue_only to --source reddit_api.

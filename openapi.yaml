@@ -1,0 +1,154 @@
+openapi: 3.1.0
+info:
+  title: EasyLoanWorld Reddit Growth Copilot
+  version: 0.1.0
+  description: Find, score, draft, approve and publish Reddit traffic opportunities with anti-spam safeguards.
+servers:
+  - url: https://YOUR-DOMAIN.example
+paths:
+  /v1/opportunities:
+    get:
+      operationId: listRedditOpportunities
+      summary: List scored Reddit opportunities
+      parameters:
+        - in: query
+          name: min_score
+          schema: {type: integer, default: 65}
+        - in: query
+          name: status
+          schema: {type: string}
+        - in: query
+          name: limit
+          schema: {type: integer, default: 25, maximum: 100}
+      responses:
+        '200': {description: Opportunity list}
+  /v1/opportunities/ingest:
+    post:
+      operationId: ingestNeedleOpportunities
+      summary: Import Reddit opportunities discovered by Needle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [items]
+              properties:
+                source: {type: string, default: needle}
+                items:
+                  type: array
+                  items:
+                    type: object
+                    required: [thread_url, title]
+                    properties:
+                      thread_url: {type: string}
+                      title: {type: string}
+                      body: {type: string}
+                      subreddit: {type: string}
+                      reddit_id: {type: string}
+                      author: {type: string}
+                      created_utc: {type: number}
+                      num_comments: {type: integer}
+                      ups: {type: integer}
+                      external_score: {type: integer, minimum: 0, maximum: 100}
+      responses:
+        '200': {description: Saved opportunities}
+  /v1/drafts:
+    get:
+      operationId: listRedditDrafts
+      summary: List Reddit drafts
+      parameters:
+        - in: query
+          name: status
+          schema: {type: string}
+        - in: query
+          name: limit
+          schema: {type: integer, default: 25}
+      responses:
+        '200': {description: Draft list}
+    post:
+      operationId: draftRedditReply
+      summary: Draft a Reddit reply for one opportunity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [opportunity_id]
+              properties:
+                opportunity_id: {type: integer}
+                include_link: {type: boolean, default: false}
+      responses:
+        '200': {description: Draft}
+  /v1/drafts/approve:
+    post:
+      operationId: approveRedditDraft
+      summary: Approve or reject a draft before publishing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [draft_id]
+              properties:
+                draft_id: {type: integer}
+                approved: {type: boolean, default: true}
+      responses:
+        '200': {description: Approval state}
+  /v1/drafts/{draft_id}/publish:
+    post:
+      operationId: publishApprovedRedditDraft
+      summary: Publish an explicitly approved Reddit draft
+      parameters:
+        - in: path
+          name: draft_id
+          required: true
+          schema: {type: integer}
+      responses:
+        '200': {description: Publication result}
+  /v1/daily-run:
+    post:
+      operationId: runRedditDailyWorkflow
+      summary: Run daily discovery/drafting workflow
+      parameters:
+        - in: query
+          name: source
+          schema: {type: string, enum: [queue_only, reddit_api], default: queue_only}
+        - in: query
+          name: max_drafts
+          schema: {type: integer, default: 12}
+      responses:
+        '200': {description: Daily-run result}
+  /v1/site/refresh:
+    post:
+      operationId: refreshEasyLoanWorldSitemap
+      summary: Refresh EasyLoanWorld sitemap index
+      responses:
+        '200': {description: Page count}
+  /v1/site/match:
+    get:
+      operationId: matchEasyLoanWorldPage
+      summary: Match a Reddit topic to an EasyLoanWorld page
+      parameters:
+        - in: query
+          name: q
+          required: true
+          schema: {type: string}
+      responses:
+        '200': {description: Best match}
+  /v1/dashboard:
+    get:
+      operationId: redditGrowthDashboard
+      summary: Show opportunity, draft and run metrics
+      responses:
+        '200': {description: Dashboard data}
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+security:
+  - ApiKeyAuth: []
