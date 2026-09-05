@@ -6,4 +6,4 @@ COPY . .
 RUN mkdir -p /app/data
 ENV PYTHONUNBUFFERED=1
 EXPOSE 8000
-CMD ["python", "-m", "reddit_growth.mcp_server"]
+CMD ["python", "-m", "reddit_growth.entrypoint"]
